@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installer for nemo-catbox.
+# Installer for catbox-nemo-integration.
 # Usage: ./install.sh [-y] [--no-deps] [--bin-dir DIR] [--uninstall]
 set -euo pipefail
 
