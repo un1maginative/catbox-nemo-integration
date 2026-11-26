@@ -1,0 +1,8 @@
+[Nemo Action]
+Name=Upload to Catbox
+Comment=Upload selected file(s) to catbox.moe and copy the link
+Exec=@BIN@ %F
+Icon-Name=network-transmit-symbolic
+Selection=notnone
+Extensions=nodirs;
+Quote=double

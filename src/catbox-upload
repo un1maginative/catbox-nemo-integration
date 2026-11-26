@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# catbox-upload: upload files to catbox.moe, copy resulting URL(s) to clipboard.
+# Optional: put your catbox userhash in ~/.config/catbox/userhash
+
+API="https://catbox.moe/user/api.php"
+HASH_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/catbox/userhash"
+userhash=""
+[ -f "$HASH_FILE" ] && userhash=$(<"$HASH_FILE")
+
+copy_clip() {
+    if [ -n "$WAYLAND_DISPLAY" ] && command -v wl-copy >/dev/null; then
+        wl-copy
+    elif command -v xclip >/dev/null; then
+        xclip -selection clipboard
+    elif command -v xsel >/dev/null; then
+        xsel --clipboard --input
+    else
+        cat >/dev/null
+        return 1
+    fi
+}
+
+urls=()
+for f in "$@"; do
+    [ -f "$f" ] || continue
+    name=$(basename "$f")
+    notify-send -i network-transmit "Catbox" "Uploading $name..."
+
+    resp=$(curl -sS --fail-with-body -A "nemo-catbox/1.0" \
+        -F "reqtype=fileupload" \
+        -F "userhash=$userhash" \
+        -F "fileToUpload=@$f" \
+        "$API" 2>&1)
+
+    if [[ "$resp" == https://files.catbox.moe/* ]]; then
+        urls+=("$resp")
+    else
+        notify-send -u critical -i dialog-error "Catbox upload failed" "$name: $resp"
+    fi
+done
+
+if [ ${#urls[@]} -gt 0 ]; then
+    list=$(printf '%s\n' "${urls[@]}")
+    if printf '%s' "$list" | copy_clip; then
+        notify-send -i emblem-ok "Catbox" "Copied ${#urls[@]} link(s) to clipboard:
+$list"
+    else
+        notify-send -u critical -i dialog-warning "Catbox" "Uploaded, but no clipboard tool found (install xclip or wl-clipboard):
+$list"
+    fi
+fi
