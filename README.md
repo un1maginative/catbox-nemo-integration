@@ -1,4 +1,4 @@
-# nemo-catbox
+# catbox-nemo-integration
 
 Right-click upload to [catbox.moe](https://catbox.moe) from the Nemo file manager (Cinnamon). Uploads the selected file(s), copies the link(s) to the clipboard, and shows a desktop notification.
 
