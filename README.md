@@ -5,7 +5,7 @@ Right-click upload to [catbox.moe](https://catbox.moe) from the Nemo file manage
 ## Install
 
 ```bash
-git clone <this-repo-url> nemo-catbox
+git clone https://github.com/un1maginative/catbox-nemo-integration nemo-catbox
 cd nemo-catbox
 ./install.sh
 ```
